@@ -32,13 +32,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//projects := getProjects(aivenClient)
-	//numProjects.Set(float64(len(projects)))
 
 	exporter := AivenCollector{Client: aivenClient}
-	prometheus.MustRegister(exporter)
+	r := prometheus.NewRegistry()
+	r.MustRegister(exporter)
 
-	http.Handle("/metrics", promhttp.Handler())
+	http.Handle("/metrics", promhttp.HandlerFor(r, promhttp.HandlerOpts{}))
 	log.Fatal(http.ListenAndServe(":2112", nil))
 
 }
