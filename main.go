@@ -21,12 +21,12 @@ func main() {
 
 	setupLogging()
 
-	aiven_token, set := os.LookupEnv("AIVEN_API_TOKEN")
+	aivenToken, set := os.LookupEnv("AIVEN_API_TOKEN")
 	if set == false {
 		log.Fatal("No Aiven token found in environment. Please export the token as 'AIVEN_API_TOKEN' environment variable")
 	}
 
-	aivenClient, err := aiven.NewTokenClient(aiven_token, "")
+	aivenClient, err := aiven.NewTokenClient(aivenToken, "")
 	if err != nil {
 		log.Fatal(err)
 	}
