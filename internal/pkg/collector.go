@@ -12,10 +12,11 @@ type AivenCollector struct {
 	Client *aiven.Client
 }
 
-func (ac *AivenCollector) CollectAsync() {
+func (ac AivenCollector) CollectAsync() {
 	metrics = make([]prometheus.Metric, 0)
-	projects := ac.GetProjects()
-	ac.processProjects(projects)
+	go ac.processAccountInfo()
+	projects := ac.getProjects()
+	go ac.processProjects(projects)
 }
 
 func (ac AivenCollector) Describe(descs chan<- *prometheus.Desc) {
@@ -28,7 +29,24 @@ func (ac AivenCollector) Collect(ch chan<- prometheus.Metric) {
 	}
 }
 
-func (ac *AivenCollector) processProjects(projects []*aiven.Project) {
+func (ac AivenCollector) processAccountInfo() {
+	// TODO: Handle Errors properly
+	accountsResponse, _ := ac.Client.Accounts.List()
+	for _, acc := range accountsResponse.Accounts {
+		teamsResponse, _ := ac.Client.AccountTeams.List(acc.Id)
+		metrics = append(metrics, prometheus.MustNewConstMetric(teamCount, prometheus.GaugeValue, float64(len(teamsResponse.Teams)), acc.Name))
+		ac.collectAccountTeams(teamsResponse, acc)
+	}
+}
+
+func (ac AivenCollector) collectAccountTeams(teamsResponse *aiven.AccountTeamsResponse, acc aiven.Account) {
+	for _, team := range teamsResponse.Teams {
+		membersResponse, _ := ac.Client.AccountTeamMembers.List(acc.Id, team.Id)
+		metrics = append(metrics, prometheus.MustNewConstMetric(teamMemberCount, prometheus.GaugeValue, float64(len(membersResponse.Members)), acc.Name, team.Name))
+	}
+}
+
+func (ac AivenCollector) processProjects(projects []*aiven.Project) {
 	metrics = append(metrics, prometheus.MustNewConstMetric(projectCount, prometheus.GaugeValue, float64(len(projects))))
 	for _, project := range projects {
 		log.Debug("Fetching infos for " + project.Name)
@@ -66,7 +84,7 @@ func collectServiceUsersPerService(service *aiven.Service, project *aiven.Projec
 	metrics = append(metrics, prometheus.MustNewConstMetric(serviceUserCount, prometheus.GaugeValue, float64(len(service.Users)), project.Name, service.Name))
 }
 
-func (ac *AivenCollector) GetProjects() []*aiven.Project {
+func (ac AivenCollector) getProjects() []*aiven.Project {
 	log.Debug("Start fetching all projects")
 	list, err := ac.Client.Projects.List()
 	if err != nil {
@@ -77,8 +95,13 @@ func (ac *AivenCollector) GetProjects() []*aiven.Project {
 
 var (
 	// Basic Info
+	// TODO: Add Account info to projectCount
 	projectCount = prometheus.NewDesc("aiven_project_count_total", "The number of projects registered in the account", nil, nil)
 	serviceCount = prometheus.NewDesc("aiven_service_count", "The number of services per project", []string{"project"}, nil)
+
+	// Account related
+	teamCount       = prometheus.NewDesc("aiven_account_team_count", "The number of teams per account", []string{"account"}, nil)
+	teamMemberCount = prometheus.NewDesc("aiven_account_team_member_count", "The number of members per team for an account", []string{"account", "team"}, nil)
 
 	// Service related info
 	nodeCount        = prometheus.NewDesc("aiven_service_node_count", "Node Count per Service", []string{"project", "service"}, nil)
