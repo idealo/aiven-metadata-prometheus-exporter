@@ -12,3 +12,8 @@
   * Node count per service
   * Node state per service
   * Service user count per service
+
+### Todo:
+* Metrics
+  * Topic count per service
+* Test coverage 
