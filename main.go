@@ -16,6 +16,7 @@ import (
 func main() {
 
 	flag.BoolVar(&debugEnabled, "debug", false, "Enable debug logging")
+	flag.StringVar(&interval, "scrape-interval", "5m", "Aiven API scrape interval. Defaults to 5m")
 	flag.Parse()
 
 	setupLogging()
@@ -37,7 +38,6 @@ func main() {
 	r.MustRegister(exporter)
 
 	scheduler := gocron.NewScheduler(time.UTC)
-	interval := "5m"
 	_, err = scheduler.Every(interval).Do(func() { exporter.CollectAsync() })
 	if err != nil {
 		log.Fatal(err)
@@ -64,4 +64,5 @@ func setupLogging() {
 
 var (
 	debugEnabled = false
+	interval     string
 )
