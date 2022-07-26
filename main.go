@@ -1,7 +1,7 @@
 package main
 
 import (
-	. "aiven-prometheus-exporter/internal/pkg"
+	. "aiven-metadata-prometheus-exporter/internal/pkg"
 	"flag"
 	"github.com/aiven/aiven-go-client"
 	"github.com/go-co-op/gocron"

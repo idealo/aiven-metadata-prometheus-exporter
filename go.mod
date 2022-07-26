@@ -1,4 +1,4 @@
-module aiven-prometheus-exporter
+module aiven-metadata-prometheus-exporter
 
 require (
 	github.com/aiven/aiven-go-client v1.7.0
