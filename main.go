@@ -28,7 +28,7 @@ func main() {
 
 	aivenClient, err := aiven.NewTokenClient(aivenToken, "")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
 	log.Infoln("Starting Aiven Metadata Prometheus Exporter")
@@ -40,7 +40,7 @@ func main() {
 	scheduler := gocron.NewScheduler(time.UTC)
 	_, err = scheduler.Every(interval).Do(func() { collector.CollectAsync() })
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalln(err)
 	}
 
 	log.Infoln("Scheduler set up. Metrics will be refreshed every", interval)
