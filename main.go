@@ -31,14 +31,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Infoln("Starting the Aiven Prometheus Exporter")
+	log.Infoln("Starting Aiven Metadata Prometheus Exporter")
 
-	exporter := AivenCollector{Client: aivenClient}
+	collector := AivenCollector{AivenClient: aivenClient}
 	r := prometheus.NewRegistry()
-	r.MustRegister(exporter)
+	r.MustRegister(collector)
 
 	scheduler := gocron.NewScheduler(time.UTC)
-	_, err = scheduler.Every(interval).Do(func() { exporter.CollectAsync() })
+	_, err = scheduler.Every(interval).Do(func() { collector.CollectAsync() })
 	if err != nil {
 		log.Fatal(err)
 	}
