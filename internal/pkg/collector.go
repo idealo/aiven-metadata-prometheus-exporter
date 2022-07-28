@@ -23,10 +23,11 @@ var (
 	projectVpcPeeringConnectionCount = prometheus.NewDesc("aiven_project_vpc_peering_count_total", "The number of VPC peering connections per project", []string{"account", "project"}, nil)
 
 	// Service related info
-	nodeCount        = prometheus.NewDesc("aiven_service_node_count_total", "Node count per service", []string{"account", "project", "service"}, nil)
-	nodeState        = prometheus.NewDesc("aiven_service_node_state_info", "Node state per service", []string{"account", "project", "service", "node_name", "state"}, nil)
-	serviceUserCount = prometheus.NewDesc("aiven_service_serviceuser_count_total", "Service user count per service", []string{"account", "project", "service"}, nil)
-	topicCount       = prometheus.NewDesc("aiven_service_topic_count_total", "Topic count per service", []string{"account", "project", "service"}, nil)
+	nodeCount            = prometheus.NewDesc("aiven_service_node_count_total", "Node count per service", []string{"account", "project", "service"}, nil)
+	nodeState            = prometheus.NewDesc("aiven_service_node_state_info", "Node state per service", []string{"account", "project", "service", "node_name", "state"}, nil)
+	serviceUserCount     = prometheus.NewDesc("aiven_service_serviceuser_count_total", "Service user count per service", []string{"account", "project", "service"}, nil)
+	topicCount           = prometheus.NewDesc("aiven_service_topic_count_total", "Topic count per service", []string{"account", "project", "service"}, nil)
+	bookedPlanPerService = prometheus.NewDesc("aiven_service_booked_plan_info", "The booked plan for a service", []string{"account", "project", "service", "plan"}, nil)
 )
 
 type AivenCollector struct {
@@ -118,6 +119,7 @@ func (ac AivenCollector) processServices(project *aiven.Project) {
 		collectServiceNodeStates(service, project)
 		collectServiceUsersPerService(service, project)
 		collectServiceTopicCount(ac.AivenClient, service, project)
+		collectServiceBookedPlan(service, project)
 	}
 }
 
@@ -138,6 +140,10 @@ func collectServiceNodeStates(service *aiven.Service, project *aiven.Project) {
 	for _, state := range service.NodeStates {
 		metrics = append(metrics, prometheus.MustNewConstMetric(nodeState, prometheus.CounterValue, float64(1), accountInfo[project.AccountId], project.Name, service.Name, state.Name, state.State))
 	}
+}
+
+func collectServiceBookedPlan(service *aiven.Service, project *aiven.Project) {
+	metrics = append(metrics, prometheus.MustNewConstMetric(bookedPlanPerService, prometheus.CounterValue, float64(1), accountInfo[project.AccountId], project.Name, service.Name, service.Plan))
 }
 
 func (ac AivenCollector) countClustersPerProject(project *aiven.Project) {
