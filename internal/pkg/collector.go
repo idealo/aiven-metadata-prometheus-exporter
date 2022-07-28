@@ -16,9 +16,11 @@ var (
 	teamMemberCount = prometheus.NewDesc("aiven_account_team_member_count_total", "The number of members per team for an account", []string{"account", "team"}, nil)
 
 	// Project related
-	projectCount            = prometheus.NewDesc("aiven_project_count_total", "The number of projects registered in the account", []string{"account"}, nil)
-	serviceCount            = prometheus.NewDesc("aiven_service_count_total", "The number of services per project", []string{"account", "project"}, nil)
-	projectEstimatedBilling = prometheus.NewDesc("aiven_project_estimated_billing_total", "The estimated billing per project", []string{"account", "project"}, nil)
+	projectCount                     = prometheus.NewDesc("aiven_project_count_total", "The number of projects registered in the account", []string{"account"}, nil)
+	serviceCount                     = prometheus.NewDesc("aiven_service_count_total", "The number of services per project", []string{"account", "project"}, nil)
+	projectEstimatedBilling          = prometheus.NewDesc("aiven_project_estimated_billing_total", "The estimated billing per project", []string{"account", "project"}, nil)
+	projectVpcCount                  = prometheus.NewDesc("aiven_project_vpc_count_total", "The number of VPCs per project", []string{"account", "project"}, nil)
+	projectVpcPeeringConnectionCount = prometheus.NewDesc("aiven_project_vpc_peering_count_total", "The number of VPC peering connections per project", []string{"account", "project"}, nil)
 
 	// Service related info
 	nodeCount        = prometheus.NewDesc("aiven_service_node_count_total", "Node count per service", []string{"account", "project", "service"}, nil)
@@ -79,16 +81,32 @@ func (ac AivenCollector) processProjects(projects []*aiven.Project) {
 		log.Debug("Fetching infos for " + project.Name)
 		ac.countClustersPerProject(project)
 		ac.processServices(project)
+		processEstimatedBilling(project)
 		projectCountPerAccount[project.AccountId]++
-
-		estimatedBalance, err := strconv.ParseFloat(project.EstimatedBalance, 32)
-		handle(err)
-		meterFloat(projectEstimatedBilling, estimatedBalance, accountInfo[project.AccountId], project.Name)
+		ac.processVPCs(project)
 	}
 
 	for key, count := range projectCountPerAccount {
 		meterInt(projectCount, count, accountInfo[key])
 	}
+}
+
+func (ac AivenCollector) processVPCs(project *aiven.Project) {
+	log.Debug("Fetching VPC infos for " + project.Name)
+	vpcs, err := ac.AivenClient.VPCs.List(project.Name)
+	handle(err)
+	meterInt(projectVpcCount, len(vpcs), accountInfo[project.AccountId], project.Name)
+	for _, vpc := range vpcs {
+		vpcPeeringConnections, err := ac.AivenClient.VPCPeeringConnections.List(project.Name, vpc.ProjectVPCID)
+		handle(err)
+		meterInt(projectVpcPeeringConnectionCount, len(vpcPeeringConnections), accountInfo[project.AccountId], project.Name)
+	}
+}
+
+func processEstimatedBilling(project *aiven.Project) {
+	estimatedBalance, err := strconv.ParseFloat(project.EstimatedBalance, 32)
+	handle(err)
+	meterFloat(projectEstimatedBilling, estimatedBalance, accountInfo[project.AccountId], project.Name)
 }
 
 func (ac AivenCollector) processServices(project *aiven.Project) {
