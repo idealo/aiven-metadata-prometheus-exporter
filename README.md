@@ -15,10 +15,10 @@
 
 ### Todo:
 * Metrics
-  * [ ] No. VPC Peering Cxt per Project
-  * [ ] No. VPCs per Project
+  * [x] No. VPC Peering Cxt per Project
+  * [x] No. VPCs per Project
   * [x] No. Topics per Service 
-  * [ ] Booked Plan per Service
+  * [X] Booked Plan per Service
   * [x] Estimated billing per project
 
 * Test coverage 
