@@ -15,5 +15,10 @@
 
 ### Todo:
 * Metrics
-  * Topic count per service
+  * No. VPC Peering Cxt per Project
+  * No. VPCs per Project
+  * [x] No. Topics per Service 
+  * Booked Plan per Service
+  * [x] Estimated billing per project
+
 * Test coverage 
