@@ -45,7 +45,8 @@ The following arguments are available:
 
 * Feel free to contribute enhancements or bug fixes.
   * Fork this repo, apply your changes and create a PR pointing to this repo and the develop branch
-* If you have any ideas or suggestions please open an issue and describe your idea or feature request
+* If you have any ideas or suggestions, please open an issue and describe your idea or feature request
+  * If you have any more generic requests, feel free to open a [discussion](https://github.com/idealo/aiven-metadata-prometheus-exporter/discussions) 
 
 ## License
 
