@@ -15,8 +15,6 @@ import (
 
 func main() {
 
-	flag.BoolVar(&debugEnabled, "debug", false, "Enable debug logging")
-	flag.StringVar(&interval, "scrape-interval", "5m", "Aiven API scrape interval. Defaults to 5m")
 	flag.Parse()
 
 	setupLogging()
@@ -38,23 +36,23 @@ func main() {
 	r.MustRegister(collector)
 
 	scheduler := gocron.NewScheduler(time.UTC)
-	_, err = scheduler.Every(interval).Do(func() { collector.CollectAsync() })
+	_, err = scheduler.Every(*interval).Do(func() { collector.CollectAsync() })
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	log.Infoln("Scheduler set up. Metrics will be refreshed every", interval)
+	log.Infoln("Scheduler set up. Metrics will be refreshed every", *interval)
 	scheduler.StartAsync()
 
-	log.Infoln("Listening on port 2112 and /metrics")
-	http.Handle("/metrics", promhttp.HandlerFor(r, promhttp.HandlerOpts{}))
-	log.Fatal(http.ListenAndServe(":2112", nil))
+	log.Infoln("Listening on port", *listenAddress, "and", *metricsPath)
+	http.Handle(*metricsPath, promhttp.HandlerFor(r, promhttp.HandlerOpts{}))
+	log.Fatal(http.ListenAndServe(*listenAddress, nil))
 
 }
 
 func setupLogging() {
 	log.SetFormatter(&log.JSONFormatter{})
-	if debugEnabled {
+	if *debugEnabled {
 		log.SetLevel(log.DebugLevel)
 		log.Debug("Debugging enabled")
 	} else {
@@ -63,6 +61,8 @@ func setupLogging() {
 }
 
 var (
-	debugEnabled = false
-	interval     string
+	debugEnabled  = flag.Bool("debug", false, "Enable debug logging")
+	interval      = flag.String("scrape-interval", "5m", "Aiven API scrape interval. Defaults to 5m")
+	listenAddress = flag.String("listen-address", ":2112", "Address to listen on for telemetry")
+	metricsPath   = flag.String("telemetry-path", "/metrics", "Path under which to expose metrics")
 )
