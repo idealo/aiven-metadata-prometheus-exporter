@@ -62,7 +62,7 @@ func setupLogging() {
 
 var (
 	debugEnabled  = flag.Bool("debug", false, "Enable debug logging")
-	interval      = flag.String("scrape-interval", "5m", "Aiven API scrape interval. Defaults to 5m")
+	interval      = flag.String("scrape-interval", "5m", "Aiven API scrape interval")
 	listenAddress = flag.String("listen-address", ":2112", "Address to listen on for telemetry")
 	metricsPath   = flag.String("telemetry-path", "/metrics", "Path under which to expose metrics")
 )
