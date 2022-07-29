@@ -83,7 +83,6 @@ func (ac AivenCollector) processProjects(projects []*aiven.Project) {
 
 	for _, project := range projects {
 		log.Debug("Fetching infos for " + project.Name)
-		ac.countClustersPerProject(project)
 		ac.processServices(project)
 		processEstimatedBilling(project)
 		projectCountPerAccount[project.AccountId]++
@@ -113,6 +112,8 @@ func processEstimatedBilling(project *aiven.Project) {
 
 func (ac AivenCollector) processServices(project *aiven.Project) {
 	services := ac.client.GetServicesList(project.Name)
+	meterInt(serviceCount, len(services), accountInfo[project.AccountId], project.Name)
+
 	for _, service := range services {
 		log.Debug("Fetching service infos for " + project.Name + " and " + service.Name)
 		collectServiceNodeCount(service, project)
@@ -143,11 +144,6 @@ func collectServiceNodeStates(service *aiven.Service, project *aiven.Project) {
 
 func collectServiceBookedPlan(service *aiven.Service, project *aiven.Project) {
 	metrics = append(metrics, prometheus.MustNewConstMetric(bookedPlanPerService, prometheus.CounterValue, float64(1), accountInfo[project.AccountId], project.Name, service.Name, service.Plan))
-}
-
-func (ac AivenCollector) countClustersPerProject(project *aiven.Project) {
-	services := ac.client.GetServicesList(project.Name)
-	meterInt(serviceCount, len(services), accountInfo[project.AccountId], project.Name)
 }
 
 func collectServiceUsersPerService(service *aiven.Service, project *aiven.Project) {
