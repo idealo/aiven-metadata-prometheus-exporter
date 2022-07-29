@@ -45,7 +45,8 @@ func (m MockAivenClient) GetKafkaTopicsList(_ string, _ string) []*aiven.KafkaLi
 func (m MockAivenClient) GetProjectsList() []*aiven.Project {
 	return []*aiven.Project{
 		{
-			Name: "TestProject",
+			Name:             "TestProject",
+			EstimatedBalance: "42.00",
 		},
 	}
 }
@@ -53,7 +54,10 @@ func (m MockAivenClient) GetProjectsList() []*aiven.Project {
 func (m MockAivenClient) GetServicesList(_ string) []*aiven.Service {
 	return []*aiven.Service{
 		{
-			Name: "TestService",
+			Name:       "TestService",
+			State:      "Running",
+			Type:       "kafka",
+			NodeStates: []*aiven.NodeState{{State: "Running"}},
 		},
 	}
 }
@@ -66,25 +70,13 @@ func (m MockAivenClient) GetVpcsList(_ string) []*aiven.VPC {
 	}
 }
 
-func (m MockAivenClient) GetVpcPeeringConnectionsList(projectName string, vpcId string) []*aiven.VPCPeeringConnection {
+func (m MockAivenClient) GetVpcPeeringConnectionsList(_ string, _ string) []*aiven.VPCPeeringConnection {
 	return []*aiven.VPCPeeringConnection{
 		{
 			//	empty
 		},
 	}
 
-}
-
-func TestAivenCollector_processAccountInfo(t *testing.T) {
-	mock := MockAivenClient{}
-	ac := AivenCollector{client: mock}
-
-	t.Run("Happy Path", func(t *testing.T) {
-		ac.processAccountInfo()
-		if len(metrics) == 0 {
-			t.Fail()
-		}
-	})
 }
 
 func Test_collectServiceTopicCount(t *testing.T) {
@@ -104,6 +96,15 @@ func Test_collectServiceTopicCount(t *testing.T) {
 			args: args{
 				client:  MockAivenClient{},
 				service: &aiven.Service{Name: "TestService", Type: "kafka"},
+				project: &aiven.Project{Name: "TestProject"},
+			},
+			wantedMetrics: 1,
+		},
+		{
+			name: "Should meter also when the type is uppercase or capitalized",
+			args: args{
+				client:  MockAivenClient{},
+				service: &aiven.Service{Name: "TestService", Type: "KaFKa"},
 				project: &aiven.Project{Name: "TestProject"},
 			},
 			wantedMetrics: 1,
@@ -143,9 +144,27 @@ func TestAivenCollector_processProjects(t *testing.T) {
 	t.Run("Happy Path", func(t *testing.T) {
 		ac.processProjects(projects)
 
-		if len(metrics) != 8 {
-			log.Error("Wanted 8, got ", len(metrics))
-			t.Fail()
+		wantedMetrics := 10
+
+		if len(metrics) != wantedMetrics {
+			t.Error("Wanted", wantedMetrics, "got", len(metrics))
+		}
+	})
+}
+
+func TestAivenCollector_CollectAsync(t *testing.T) {
+	mock := MockAivenClient{}
+	ac := AivenCollector{client: mock}
+
+	t.Run("Happy Path", func(t *testing.T) {
+		ac.CollectAsync()
+
+		wantedMetrics := 12
+		if len(metrics) != wantedMetrics {
+			for _, metric := range metrics {
+				log.Error(metric.Desc())
+			}
+			t.Error("Wanted", wantedMetrics, "got", len(metrics))
 		}
 	})
 }

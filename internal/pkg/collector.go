@@ -5,6 +5,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"strconv"
+	"strings"
 )
 
 var (
@@ -126,7 +127,7 @@ func (ac AivenCollector) processServices(project *aiven.Project) {
 
 func collectServiceTopicCount(client Client, service *aiven.Service, project *aiven.Project) {
 	// e.g. Kafka Connect Services have no topics
-	if service.Type == "kafka" {
+	if strings.ToLower(service.Type) == "kafka" {
 		topics := client.GetKafkaTopicsList(project.Name, service.Name)
 		meterInt(topicCount, len(topics), accountInfo[project.AccountId], project.Name, service.Name)
 	}
