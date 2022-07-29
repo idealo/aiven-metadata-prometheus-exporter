@@ -79,6 +79,23 @@ func (m MockAivenClient) GetVpcPeeringConnectionsList(_ string, _ string) []*aiv
 
 }
 
+func TestAivenCollector_CollectAsync(t *testing.T) {
+	mock := MockAivenClient{}
+	ac := AivenCollector{client: mock}
+
+	t.Run("Happy Path", func(t *testing.T) {
+		ac.CollectAsync()
+		// TODO:  Refactor those tests to use a more reliable "expected" form than using magic numbers here.
+		wantedMetrics := 12
+		if len(metrics) != wantedMetrics {
+			for _, metric := range metrics {
+				log.Error(metric.Desc())
+			}
+			t.Error("Wanted", wantedMetrics, "got", len(metrics))
+		}
+	})
+}
+
 func Test_collectServiceTopicCount(t *testing.T) {
 	type args struct {
 		client  Client
@@ -147,23 +164,6 @@ func TestAivenCollector_processProjects(t *testing.T) {
 		wantedMetrics := 10
 
 		if len(metrics) != wantedMetrics {
-			t.Error("Wanted", wantedMetrics, "got", len(metrics))
-		}
-	})
-}
-
-func TestAivenCollector_CollectAsync(t *testing.T) {
-	mock := MockAivenClient{}
-	ac := AivenCollector{client: mock}
-
-	t.Run("Happy Path", func(t *testing.T) {
-		ac.CollectAsync()
-
-		wantedMetrics := 12
-		if len(metrics) != wantedMetrics {
-			for _, metric := range metrics {
-				log.Error(metric.Desc())
-			}
 			t.Error("Wanted", wantedMetrics, "got", len(metrics))
 		}
 	})
