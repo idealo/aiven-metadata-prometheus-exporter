@@ -31,7 +31,12 @@ var (
 )
 
 type AivenCollector struct {
-	AivenClient *aiven.Client
+	client Client
+}
+
+func (ac AivenCollector) Init(client interface{}) *AivenCollector {
+	ac.client = AivenClient{client: client.(*aiven.Client)}
+	return &ac
 }
 
 func (ac AivenCollector) CollectAsync() {
@@ -52,25 +57,23 @@ func (ac AivenCollector) Collect(ch chan<- prometheus.Metric) {
 }
 
 func (ac AivenCollector) processAccountInfo() {
-	accountsResponse, err := ac.AivenClient.Accounts.List()
-	handle(err)
+	accountsList := ac.client.GetAccountsList()
 	log.Debug("Fetching account infos")
-	for _, acc := range accountsResponse.Accounts {
+	for _, acc := range accountsList {
 
 		accountInfo[acc.Id] = acc.Name
 
-		teamsResponse, err := ac.AivenClient.AccountTeams.List(acc.Id)
-		handle(err)
-		meterInt(teamCount, len(teamsResponse.Teams), acc.Name)
-		ac.collectAccountTeams(teamsResponse, acc)
+		teamsList := ac.client.GetAccountTeamsList(acc.Id)
+		meterInt(teamCount, len(*teamsList), acc.Name)
+		ac.collectAccountTeams(teamsList, acc)
 	}
 }
 
-func (ac AivenCollector) collectAccountTeams(teamsResponse *aiven.AccountTeamsResponse, acc aiven.Account) {
+func (ac AivenCollector) collectAccountTeams(teamsResponse *[]aiven.AccountTeam, acc aiven.Account) {
 	log.Debug("Collecting account team infos for account: " + acc.Name)
-	for _, team := range teamsResponse.Teams {
-		membersResponse, _ := ac.AivenClient.AccountTeamMembers.List(acc.Id, team.Id)
-		meterInt(teamMemberCount, len(membersResponse.Members), acc.Name, team.Name)
+	for _, team := range *teamsResponse {
+		membersList := ac.client.GetAccountTeamMembersList(acc.Id, team.Id)
+		meterInt(teamMemberCount, len(*membersList), acc.Name, team.Name)
 	}
 }
 
@@ -94,12 +97,10 @@ func (ac AivenCollector) processProjects(projects []*aiven.Project) {
 
 func (ac AivenCollector) processVPCs(project *aiven.Project) {
 	log.Debug("Fetching VPC infos for " + project.Name)
-	vpcs, err := ac.AivenClient.VPCs.List(project.Name)
-	handle(err)
+	vpcs := ac.client.GetVpcsList(project.Name)
 	meterInt(projectVpcCount, len(vpcs), accountInfo[project.AccountId], project.Name)
 	for _, vpc := range vpcs {
-		vpcPeeringConnections, err := ac.AivenClient.VPCPeeringConnections.List(project.Name, vpc.ProjectVPCID)
-		handle(err)
+		vpcPeeringConnections := ac.client.GetVpcPeeringConnectionsList(project.Name, vpc.ProjectVPCID)
 		meterInt(projectVpcPeeringConnectionCount, len(vpcPeeringConnections), accountInfo[project.AccountId], project.Name)
 	}
 }
@@ -111,23 +112,21 @@ func processEstimatedBilling(project *aiven.Project) {
 }
 
 func (ac AivenCollector) processServices(project *aiven.Project) {
-	services, err := ac.AivenClient.Services.List(project.Name)
-	handle(err)
+	services := ac.client.GetServicesList(project.Name)
 	for _, service := range services {
 		log.Debug("Fetching service infos for " + project.Name + " and " + service.Name)
 		collectServiceNodeCount(service, project)
 		collectServiceNodeStates(service, project)
 		collectServiceUsersPerService(service, project)
-		collectServiceTopicCount(ac.AivenClient, service, project)
+		collectServiceTopicCount(ac.client, service, project)
 		collectServiceBookedPlan(service, project)
 	}
 }
 
-func collectServiceTopicCount(client *aiven.Client, service *aiven.Service, project *aiven.Project) {
+func collectServiceTopicCount(client Client, service *aiven.Service, project *aiven.Project) {
 	// e.g. Kafka Connect Services have no topics
 	if service.Type == "kafka" {
-		topics, err := client.KafkaTopics.List(project.Name, service.Name)
-		handle(err)
+		topics := client.GetKafkaTopicsList(project.Name, service.Name)
 		meterInt(topicCount, len(topics), accountInfo[project.AccountId], project.Name, service.Name)
 	}
 }
@@ -147,8 +146,7 @@ func collectServiceBookedPlan(service *aiven.Service, project *aiven.Project) {
 }
 
 func (ac AivenCollector) countClustersPerProject(project *aiven.Project) {
-	services, err := ac.AivenClient.Services.List(project.Name)
-	handle(err)
+	services := ac.client.GetServicesList(project.Name)
 	meterInt(serviceCount, len(services), accountInfo[project.AccountId], project.Name)
 }
 
@@ -158,8 +156,7 @@ func collectServiceUsersPerService(service *aiven.Service, project *aiven.Projec
 
 func (ac AivenCollector) getProjects() []*aiven.Project {
 	log.Debug("Start fetching all projects")
-	list, err := ac.AivenClient.Projects.List()
-	handle(err)
+	list := ac.client.GetProjectsList()
 	return list
 }
 
