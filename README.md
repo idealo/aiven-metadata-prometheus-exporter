@@ -22,6 +22,12 @@ Provide monitoring and observability on metadata information of [Aiven](https://
 | aiven_service_topic_count_total       | Topic count per service|
 | aiven_service_booked_plan_info        | The booked plan for a service|
 
+## Installation
+
+A) Download the binaries from the [release page](https://github.com/idealo/aiven-metadata-prometheus-exporter/releases), untar and execute the binary
+
+B) build a [docker image](Dockerfile) and run the docker image locally
+
 ## Usage
 
 This prometheus exporter leverages the [Aiven Go SDK](https://github.com/aiven/aiven-go-client)
