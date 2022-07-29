@@ -3,6 +3,7 @@ package pkg
 import (
 	"github.com/aiven/aiven-go-client"
 	"github.com/prometheus/client_golang/prometheus"
+	log "github.com/sirupsen/logrus"
 	"testing"
 )
 
@@ -127,4 +128,24 @@ func Test_collectServiceTopicCount(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestAivenCollector_processProjects(t *testing.T) {
+	mock := MockAivenClient{}
+	ac := AivenCollector{client: mock}
+	projects := []*aiven.Project{
+		{
+			EstimatedBalance: "42.00",
+			AccountId:        "TestAccountId",
+		},
+	}
+
+	t.Run("Happy Path", func(t *testing.T) {
+		ac.processProjects(projects)
+
+		if len(metrics) != 8 {
+			log.Error("Wanted 8, got ", len(metrics))
+			t.Fail()
+		}
+	})
 }
