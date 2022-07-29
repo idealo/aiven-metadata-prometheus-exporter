@@ -1,0 +1,36 @@
+# .goreleaser.yml
+project_name: aiven-metadata-prometheus-exporter
+builds:
+  - env: [ CGO_ENABLED=0 ]
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    id: "aiven-metadata-prometheus-exporter"
+    dir: .
+    main: .
+
+release:
+  draft: true
+
+changelog:
+  skip: false
+
+  # Changelog generation implementation to use.
+  #
+  # Valid options are:
+  # - `git`: uses `git log`;
+  # - `github`: uses the compare GitHub API, appending the author login to the changelog.
+  # - `gitlab`: uses the compare GitLab API, appending the author name and email to the changelog.
+  # - `github-native`: uses the GitHub release notes generation API, disables the groups feature.
+  #
+  # Defaults to `git`.
+  use: git
+  sort: asc
+
+  filters:
+    exclude:
+      - '^docs:'
