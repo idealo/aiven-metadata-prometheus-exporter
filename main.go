@@ -31,7 +31,7 @@ func main() {
 
 	log.Infoln("Starting Aiven Metadata Prometheus Exporter")
 
-	collector := AivenCollector{AivenClient: aivenClient}
+	collector := AivenCollector.Init(AivenCollector{}, aivenClient)
 	r := prometheus.NewRegistry()
 	r.MustRegister(collector)
 
