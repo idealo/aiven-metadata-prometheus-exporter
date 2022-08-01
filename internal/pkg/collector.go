@@ -42,7 +42,7 @@ func (ac AivenCollector) Init(client interface{}) *AivenCollector {
 	return &ac
 }
 
-func (ac AivenCollector) CollectAsync() {
+func (ac AivenCollector) CollectScheduled() {
 	metrics = make([]prometheus.Metric, 0)
 	ac.processAccountInfo()
 	projects := ac.getProjects()

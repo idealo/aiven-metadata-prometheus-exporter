@@ -36,7 +36,7 @@ func main() {
 	r.MustRegister(collector)
 
 	scheduler := gocron.NewScheduler(time.UTC)
-	_, err = scheduler.Every(*interval).Do(func() { collector.CollectAsync() })
+	_, err = scheduler.Every(*interval).Do(func() { collector.CollectScheduled() })
 	if err != nil {
 		log.Fatalln(err)
 	}

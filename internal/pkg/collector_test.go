@@ -84,13 +84,16 @@ func TestAivenCollector_CollectAsync(t *testing.T) {
 	ac := AivenCollector{client: mock}
 
 	t.Run("Happy Path - Should collect and meter all registered metrics", func(t *testing.T) {
-		ac.CollectAsync()
 		wantedMetrics := len(descs)
-		if len(metrics) != wantedMetrics {
-			for _, metric := range metrics {
+
+		ac.CollectScheduled()
+		givenMetrics := metrics
+
+		if len(givenMetrics) != wantedMetrics {
+			for _, metric := range givenMetrics {
 				log.Error(metric.Desc())
 			}
-			t.Error("Wanted", wantedMetrics, "got", len(metrics))
+			t.Error("Wanted", wantedMetrics, "got", len(givenMetrics))
 		}
 	})
 }
