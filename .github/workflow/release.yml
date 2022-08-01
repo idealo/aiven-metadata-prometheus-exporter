@@ -1,10 +1,9 @@
-name: Build & Release a New Version
+name: "Build & Release a new Version"
 
 on:
   push:
     tags:
       - 'v*'
-  pull_request:
 
 jobs:
   build:
