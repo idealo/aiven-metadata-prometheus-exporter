@@ -2,8 +2,8 @@ name: "Build & Release a new Version"
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
 
 jobs:
   build:
