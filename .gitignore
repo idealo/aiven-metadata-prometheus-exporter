@@ -118,4 +118,6 @@ fabric.properties
 !.idea/runConfigurations
 
 # End of https://www.toptal.com/developers/gitignore/api/go,intellij+all
+
 /aiven-prometheus-exporter.iml
+/node_modules/
