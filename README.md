@@ -27,6 +27,9 @@ Provide monitoring and observability on metadata information of [Aiven](https://
 A) Download the binaries from the [release page](https://github.com/idealo/aiven-metadata-prometheus-exporter/releases), untar and execute the binary
 
 B) build a [docker image](Dockerfile) and run the docker image locally
+  
+    docker build -t aiven-metadata-prometheus-exporter:latest .
+    docker run --rm -p 2112:2112 -e AIVEN_API_TOKEN=myAwesomeToken aiven-metadata-prometheus-exporter:latest
 
 ## Usage
 
@@ -53,6 +56,20 @@ The following arguments are available:
   * Fork this repo, apply your changes and create a PR pointing to this repo and the develop branch
 * If you have any ideas or suggestions, please open an issue and describe your idea or feature request
   * If you have any more generic requests, feel free to open a [discussion](https://github.com/idealo/aiven-metadata-prometheus-exporter/discussions) 
+
+### Building and Testing
+
+* If you want to contribute to the project, please make sure that
+  * changes compile
+  * tests are green
+  * the changes are reflected on the `/metrics` endpoint 
+
+
+    $ go build -o bin/aiven-metadata-prometheus-exporter
+    $ go test -v ./...
+
+    $ export AIVEN_API_TOKEN=MyToken; bin/aiven-metadata-prometheus-exporter
+    $ curl -s localhost:2112/metrics
 
 ## License
 
