@@ -26,6 +26,8 @@ Provide monitoring and observability on metadata information of [Aiven](https://
 
 A) Download the binaries from the [release page](https://github.com/idealo/aiven-metadata-prometheus-exporter/releases), untar and execute the binary
 
+[//]: # (TODO -> Put an example here)
+
 B) build a [docker image](Dockerfile) and run the docker image locally
   
     docker build -t aiven-metadata-prometheus-exporter:latest .
