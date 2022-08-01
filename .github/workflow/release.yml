@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -27,11 +29,14 @@ jobs:
       - name: Tests
         run: |
           go test -v ./...
-      - name: Run GoReleaser
+      - name: Install GoReleaser
         uses: goreleaser/goreleaser-action@v2
-        if: success() && startsWith(github.ref, 'refs/tags/')
         with:
           version: latest
-          args: release -f .goreleaser.yml --rm-dist
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Semantic Release
+        uses: actions/setup-node@v2
+        with:
+          cache: npm
+          node-version: 16
+        run: |
+          npx semantic-release
