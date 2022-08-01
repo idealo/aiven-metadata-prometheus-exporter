@@ -83,10 +83,9 @@ func TestAivenCollector_CollectAsync(t *testing.T) {
 	mock := MockAivenClient{}
 	ac := AivenCollector{client: mock}
 
-	t.Run("Happy Path", func(t *testing.T) {
+	t.Run("Happy Path - Should collect and meter all registered metrics", func(t *testing.T) {
 		ac.CollectAsync()
-		// TODO:  Refactor those tests to use a more reliable "expected" form than using magic numbers here.
-		wantedMetrics := 12
+		wantedMetrics := len(descs)
 		if len(metrics) != wantedMetrics {
 			for _, metric := range metrics {
 				log.Error(metric.Desc())
@@ -109,7 +108,7 @@ func Test_collectServiceTopicCount(t *testing.T) {
 		wantedMetrics int
 	}{
 		{
-			name: "Happy Path",
+			name: "Should only meter when the type is 'kafka'",
 			args: args{
 				client:  MockAivenClient{},
 				service: &aiven.Service{Name: "TestService", Type: "kafka"},
@@ -118,7 +117,7 @@ func Test_collectServiceTopicCount(t *testing.T) {
 			wantedMetrics: 1,
 		},
 		{
-			name: "Should meter also when the type is uppercase or capitalized",
+			name: "Should meter also when the type is 'kafka' and uppercase or capitalized",
 			args: args{
 				client:  MockAivenClient{},
 				service: &aiven.Service{Name: "TestService", Type: "KaFKa"},
@@ -146,25 +145,4 @@ func Test_collectServiceTopicCount(t *testing.T) {
 			}
 		})
 	}
-}
-
-func TestAivenCollector_processProjects(t *testing.T) {
-	mock := MockAivenClient{}
-	ac := AivenCollector{client: mock}
-	projects := []*aiven.Project{
-		{
-			EstimatedBalance: "42.00",
-			AccountId:        "TestAccountId",
-		},
-	}
-
-	t.Run("Happy Path", func(t *testing.T) {
-		ac.processProjects(projects)
-
-		wantedMetrics := 10
-
-		if len(metrics) != wantedMetrics {
-			t.Error("Wanted", wantedMetrics, "got", len(metrics))
-		}
-	})
 }
