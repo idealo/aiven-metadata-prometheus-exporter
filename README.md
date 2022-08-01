@@ -39,8 +39,8 @@ The following arguments are available:
             Enable debug logging
       -listen-address string
             Address to listen on for telemetry (default ":2112")
-      -scrape-interval string
-            Aiven API scrape interval (default "5m")
+      -collect-interval string
+            In which interval shall the metrics collected from the Aiven API (default "5m")
       -telemetry-path string
             Path under which to expose metrics (default "/metrics")
 
