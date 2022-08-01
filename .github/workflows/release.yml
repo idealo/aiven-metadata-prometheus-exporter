@@ -39,4 +39,5 @@ jobs:
         with:
           cache: npm
           node-version: 16
+      - run: npm install
       - run: npx semantic-release
