@@ -33,6 +33,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v2
         with:
           version: latest
+          install-only: true
       - name: Run Semantic Release
         uses: actions/setup-node@v2
         with:
