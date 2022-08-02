@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@semantic-release/changelog": "github:semantic-release/changelog",
     "@semantic-release/commit-analyzer": "github:semantic-release/commit-analyzer",
     "@semantic-release/exec": "github:semantic-release/exec",
     "@semantic-release/git": "github:semantic-release/git",
