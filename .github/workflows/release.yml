@@ -57,10 +57,8 @@ jobs:
         with:
           version: latest
           install-only: true
-      - name: Run Semantic Versioning Release
-        uses: actions/setup-node@v2
+      - name: Release
+        uses: ridedott/release-me-action@v3.5.11
         with:
-          cache: npm
-          node-version: 16
-      - run: npm install
-      - run: npx semantic-release
+          disable-changelog: true
+          config-file: ./.releaserc.yml
