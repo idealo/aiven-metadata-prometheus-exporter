@@ -1,11 +1,15 @@
 # Aiven Metadata Prometheus Exporter
 
-## Purpose
+[![Build & Release](https://github.com/idealo/aiven-metadata-prometheus-exporter/actions/workflows/release.yml/badge.svg?branch=main)](https://github.com/idealo/aiven-metadata-prometheus-exporter/actions/workflows/release.yml)
 
-Provide monitoring and observability on metadata information of [Aiven](https://aiven.io/), especially account, project and service
+## Why? [![start with why](https://img.shields.io/badge/start%20with-why%3F-brightgreen.svg?style=flat)](http://www.ted.com/talks/simon_sinek_how_great_leaders_inspire_action)
+
+As product-owning individuals, and Aiven is a product for us, we want to have monitoring and observability for that product in place. 
+
+Here comes metadata information into the game. The prometheus exporter fetches metadata from the [Aiven](https://aiven.io/) API, especially account, project and service
   information.
 
-## Available Metrics
+## Available Metrics 📈
 
 | Metric Name                           | Description |
 |---------------------------------------|---|
@@ -22,7 +26,7 @@ Provide monitoring and observability on metadata information of [Aiven](https://
 | aiven_service_topic_count_total       | Topic count per service|
 | aiven_service_booked_plan_info        | The booked plan for a service|
 
-## Installation
+## Installation 🖥️
 
 A) Download the binaries from the [release page](https://github.com/idealo/aiven-metadata-prometheus-exporter/releases), untar and execute the binary
 
@@ -50,7 +54,8 @@ The following arguments are available:
             Path under which to expose metrics (default "/metrics")
 
 
-## Contributing
+## Contributing [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+
 
 *Contributions are highly welcome!*
 
