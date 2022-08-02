@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build:
+  run_tests:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -29,12 +29,35 @@ jobs:
       - name: Tests
         run: |
           go test -v ./...
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    needs:
+      - run_tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.CI_GITHUB_TOKEN }}
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.18
+      - name: Cache Go modules
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
       - name: Install GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
           version: latest
           install-only: true
-      - name: Run Semantic Release
+      - name: Run Semantic Versioning Release
         uses: actions/setup-node@v2
         with:
           cache: npm
