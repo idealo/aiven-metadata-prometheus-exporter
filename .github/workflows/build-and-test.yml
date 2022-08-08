@@ -4,7 +4,8 @@ on:
   pull_request:
     branches:
       - main
-
+    paths:
+      - ./**/*.go
 jobs:
   pr_tests:
     runs-on: ubuntu-latest
