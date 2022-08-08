@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - ./**/*.go
+      - ./go.mod
+      - ./go.sum
 jobs:
   pr_tests:
     runs-on: ubuntu-latest

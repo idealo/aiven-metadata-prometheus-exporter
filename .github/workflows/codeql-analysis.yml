@@ -5,6 +5,8 @@ on:
     branches: [ main ]
     paths:
       - ./**/*.go
+      - ./go.mod
+      - ./go.sum
   schedule:
     - cron: '15 20 * * 0'
 
