@@ -79,14 +79,15 @@ The following arguments are available:
 * If you want to contribute to the project, please make sure that
   * changes compile
   * tests are green
+  
+          $ go build -o bin/aiven-metadata-prometheus-exporter
+          $ go test -v ./...
+    
   * the changes are reflected on the `/metrics` endpoint 
 
+          $ export AIVEN_API_TOKEN=MyToken; bin/aiven-metadata-prometheus-exporter
+          $ curl -s localhost:2112/metrics
 
-    $ go build -o bin/aiven-metadata-prometheus-exporter
-    $ go test -v ./...
-
-    $ export AIVEN_API_TOKEN=MyToken; bin/aiven-metadata-prometheus-exporter
-    $ curl -s localhost:2112/metrics
 
 ## License
 
