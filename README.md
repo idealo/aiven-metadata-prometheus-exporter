@@ -54,6 +54,16 @@ The following arguments are available:
             Path under which to expose metrics (default "/metrics")
 
 
+## Visualizing the Metrics with Grafana
+
+* Those prometheus metrics are perfectly suited to create a Grafana dashboard out of it
+
+    ![Example Dashboard Part I](resources/img.png)
+    ![Example Dashboard Part II](resources/img_1.png)
+
+* An example dashboard you can import is located at [resources/dashboard.json](resources/dashboard.json)
+  * you have to replace targets.datasource.uid with your prometheus data source uid (or do it by hand when you've imported the dashboard) 
+
 ## Contributing [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
 
 
