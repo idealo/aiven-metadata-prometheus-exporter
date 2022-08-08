@@ -4,9 +4,9 @@ on:
   pull_request:
     branches: [ main ]
     paths:
-      - ./**/*.go
-      - ./go.mod
-      - ./go.sum
+      - '**.go'
+      - go.mod
+      - go.sum
   schedule:
     - cron: '15 20 * * 0'
 
