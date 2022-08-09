@@ -60,7 +60,7 @@ jobs:
           version: latest
           install-only: true
       - name: Release
-        uses: ridedott/release-me-action@v3.5.11
+        uses: ridedott/release-me-action@v3.6.52
         with:
           disable-changelog: true
           config-file: ./.releaserc.yml
