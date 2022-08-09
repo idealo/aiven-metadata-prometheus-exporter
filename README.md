@@ -64,15 +64,12 @@ The following arguments are available:
 * An example dashboard you can import is located at [resources/dashboard.json](resources/dashboard.json)
   * you have to replace targets.datasource.uid with your prometheus data source uid (or do it by hand when you've imported the dashboard) 
 
-## Contributing [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/dwyl/esta/issues)
+## Contributing [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](CONTRIBUTING.md)
 
 
 *Contributions are highly welcome!*
-
 * Feel free to contribute enhancements or bug fixes.
-  * Fork this repo, apply your changes and create a PR pointing to this repo and the develop branch
-* If you have any ideas or suggestions, please open an issue and describe your idea or feature request
-  * If you have any more generic requests, feel free to open a [discussion](https://github.com/idealo/aiven-metadata-prometheus-exporter/discussions) 
+* For more details on how to contribute, please look at [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ### Building and Testing
 
