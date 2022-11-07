@@ -25,7 +25,13 @@ func (c AivenClient) GetAccountTeamMembersList(accountId string, teamId string) 
 
 func (c AivenClient) GetKafkaTopicsList(projectName string, serviceName string) []*aiven.KafkaListTopic {
 	topics, err := c.client.KafkaTopics.List(projectName, serviceName)
-	handle(err)
+	if aivenError, ok := err.(aiven.Error); ok {
+		if aivenError.Status == 501 {
+			// Aiven returns 501 if a Kafka Cluster is powered off
+			return nil
+		}
+		handle(err)
+	}
 	return topics
 }
 
