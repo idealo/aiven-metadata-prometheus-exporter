@@ -2,7 +2,7 @@ module aiven-metadata-prometheus-exporter
 
 require (
 	github.com/aiven/aiven-go-client v1.17.0
-	github.com/go-co-op/gocron v1.29.0
+	github.com/go-co-op/gocron v1.30.0
 	github.com/prometheus/client_golang v1.16.0
 	github.com/sirupsen/logrus v1.9.3
 )
