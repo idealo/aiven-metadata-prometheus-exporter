@@ -59,6 +59,8 @@ github.com/aiven/aiven-go-client v1.32.0 h1:2iY/l/8eHKyMsx/Ub32S8lodZm0h8KqWyMbQ
 github.com/aiven/aiven-go-client v1.32.0/go.mod h1:3Hh1PDNcqNNCYrkU/jSAHMV/b/ynoy73fwhBPKnMe6I=
 github.com/aiven/aiven-go-client v1.33.0 h1:7Cv1KhrB+kXAXpwiZHBYJ87m1jZQ+xTlsclYKz11xck=
 github.com/aiven/aiven-go-client v1.33.0/go.mod h1:3Hh1PDNcqNNCYrkU/jSAHMV/b/ynoy73fwhBPKnMe6I=
+github.com/aiven/aiven-go-client v1.34.0 h1:FThy6mc1PrVveSfEPocUCr+9IkV7O3naiydOy02U6wo=
+github.com/aiven/aiven-go-client v1.34.0/go.mod h1:3Hh1PDNcqNNCYrkU/jSAHMV/b/ynoy73fwhBPKnMe6I=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
 github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
 github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf/go.mod h1:ybxpYRFXyAe+OPACYpWeL0wqObRcbAqCMya13uyzqw0=
