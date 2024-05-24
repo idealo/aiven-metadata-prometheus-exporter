@@ -4,7 +4,7 @@ COPY . /build
 WORKDIR /build
 RUN go build
 
-FROM alpine:3.19.1
+FROM alpine:3.20.0
 USER 1000
 COPY --from=builder /build/aiven-metadata-prometheus-exporter /bin/aiven-metadata-prometheus-exporter
 EXPOSE 2112
