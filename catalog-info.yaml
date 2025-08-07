@@ -5,12 +5,12 @@ metadata:
   description: A prometheus exporter that provides metadata metrics on Aivens service level.
   annotations:
     github.com/project-slug: idealo/aiven-metadata-prometheus-exporter
-    github.com/team-slug: idealo/persistence
+    github.com/team-slug: idealo/cloud-core
   tags:
     - aiven
     - kafka
 spec:
   type: service
   lifecycle: production
-  owner: group:persistence
+  owner: group:cloud-core
   system: message-bus-kafka
